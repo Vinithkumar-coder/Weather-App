@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css">
+    
+    
+</head>
+<body>
+    
+    <div class="container">
+        <h1>Weather App</h1>
+        <form id="weatherForm">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" placeholder="Enter your name" required><br><br>
+
+            <label for="place">Your Place:</label>
+            <input type="text" id="place" placeholder="Enter your location" required><br><br>
+
+            <button type="submit">Get Weather</button>
+        </form>
+
+        <h2 id="greeting"></h2>
+        <h3 id="weather"></h3>
+        <img id="weatherImage" src="" alt="Weather Condition" style="display: none; width: 200px; margin-top: 20px;">
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <p>Developed by <strong>Vinithkumar</strong> @ 2024</p>
+    </footer>
+
+    <script>
+        document.getElementById("weatherForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const name = document.getElementById("name").value;
+            const place = document.getElementById("place").value;
+            document.getElementById("greeting").innerText = `Hello, ${name}! Checking weather for ${place}...`;
+
+            const apiKey = "14a36e4a61debe85e4761a65bc0b3301"; // Replace with your API key
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=${apiKey}&units=metric`;
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Place not found.");
+                const data = await response.json();
+
+                const weatherDesc = data.weather[0].description;
+                const temp = data.main.temp;
+                const iconCode = data.weather[0].icon;
+
+                document.getElementById("weather").innerText = 
+                    `The current weather in ${place} is ${weatherDesc} with a temperature of ${temp}°C.`;
+
+                const weatherImage = document.getElementById("weatherImage");
+                weatherImage.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+                weatherImage.style.display = "block";
+            } catch (error) {
+                document.getElementById("weather").innerText = `Error: ${error.message}`;
+                document.getElementById("weatherImage").style.display = "none";
+            }
+        });
+    
+        
+    </script>
+</body>
+</html>
